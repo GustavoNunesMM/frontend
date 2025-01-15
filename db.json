@@ -1,0 +1,29 @@
+{
+  "users": [
+    {
+      "id": "938b",
+      "user": "",
+      "pass": "",
+      "confirmPass": "",
+      "email": ""
+    },
+    {
+      "id": "2b5d",
+      "user": "asc",
+      "pass": "$2a$10$OvBSNUm0o2ZTjsqS48JLC.bNKMoagPORHH40KkCu0WunOY7wKYqAC",
+      "email": "asc"
+    },
+    {
+      "id": "ac9d",
+      "user": "asd",
+      "pass": "$2a$10$5S2WPGZb9fbAMlGWPlgqkuXq54.7Fg9KsdHQxODVwS/zLzevldgTG",
+      "email": "asd"
+    },
+    {
+      "id": "a530",
+      "user": "asde",
+      "pass": "$2a$10$bt6g1MN1W6Wf9SZaFYbHS.DAZAMOJYj/JBnEA6m23PvN6BaKgyYBe",
+      "email": "asde"
+    }
+  ]
+}

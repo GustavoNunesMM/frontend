@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .btn-primary {
+        @apply bg-blue-500 text-white font-bold py-4 m-4 px-6 rounded-xl 
+        flex justify-center items-center flex-col
+        hover:bg-blue-600 
+        active:bg-blue-700 
+        focus:outline-none focus:ring focus:ring-blue-300;
+    }
+
+    .btn-secondary {
+        @apply bg-green-500 text-white font-bold py-4 m-4 px-6 rounded-xl 
+        flex justify-center items-center flex-col
+        hover:bg-green-600
+        active:bg-green-700 
+        focus:outline-none focus:ring focus:ring-green-300;
+    }
+    .btn-inside {
+        @apply bg-green-500 text-white font-bold h-[42px] my-0 px-6 rounded mx-[-96px]
+        flex justify-center items-center flex-col
+        hover:bg-green-600
+        active:bg-green-700 
+        focus:outline-none focus:ring focus:ring-green-300;
+    }
+
+    .btn-outline {
+        @apply border border-blue-500 text-blue-500 font-bold py-2 px-4 rounded 
+        hover:bg-blue-500 hover:text-white 
+        active:bg-blue-600 
+        focus:outline-none focus:ring focus:ring-blue-300;
+    }
+    .just-center-flex {
+        @apply flex-1 flex items-center justify-center
+    }
+    .input-default {
+        @apply w-full border p-2 rounded mb-4 
+        focus:outline-none focus:ring focus:ring-slate-50 focus:bg-white
+        invalid:outline-none invalid:ring invalid:ring-red-400 invalid:bg-red-50
+        
+    }
+    .no-counter::-webkit-outer-spin-button
+    .no-counter::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    }
+
+    .no-counter[type="number"] {
+    -moz-appearance: textfield;
+    }
+}
