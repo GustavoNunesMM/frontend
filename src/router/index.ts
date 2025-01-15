@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import user from '../views/user.vue'
+import user from '../views/admin.vue'
 import home from '../views/home.vue'
 import {userAlreadyLoggedIn } from '../middleware/tokenValidation'
 const router = createRouter({

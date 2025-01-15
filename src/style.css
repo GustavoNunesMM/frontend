@@ -12,7 +12,7 @@
     }
 
     .btn-secondary {
-        @apply bg-green-500 text-white font-bold py-4 m-4 px-6 rounded-xl 
+        @apply bg-green-500 text-white font-bold py-4 m-4 px-6 rounded-xl
         flex justify-center items-center flex-col
         hover:bg-green-600
         active:bg-green-700 
@@ -24,6 +24,13 @@
         hover:bg-green-600
         active:bg-green-700 
         focus:outline-none focus:ring focus:ring-green-300;
+    }
+    .btn-dropdown {
+        @apply bg-blue-500 text-white font-bold h-[42px] my-0 px-6 rounded
+        flex justify-center items-center flex-col
+        hover:bg-blue-600
+        active:bg-blue-700 
+        focus:outline-none focus:ring focus:ring-blue-300;
     }
 
     .btn-outline {
