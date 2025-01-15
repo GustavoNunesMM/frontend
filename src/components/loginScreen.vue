@@ -19,6 +19,8 @@
 <script lang="ts">
 import axios from "axios"
 import { responseValidation } from "../middleware/tokenValidation"
+import { storeSetUser } from '../services/setUser'
+
 const axiosInstance = axios.create({
     baseURL: "http://localhost:3000",
     withCredentials: true, // Permite enviar cookies nas requisições
@@ -51,7 +53,9 @@ export default {
                 //caso usuario já esteja logado, nem chega aqui
                 const response = await axiosInstance.post("/login", data) //recebo a reposta e deve incluir o id
                 const validation = await responseValidation(response)
+                let setUser:boolean
                 if (validation.sucess)
+                    if(!storeSetUser(response)) return console.log("Não foi possivel cadastrar usuario na sessão")
                     this.$router.push({ path: `/user/${validation.id}` })
             } catch (error) {
                 console.log(
@@ -59,8 +63,9 @@ export default {
                     error.response ? error.response.data : error
                 );
             }
-        },
+        }
 
     }
 }
 </script>
+

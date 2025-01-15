@@ -18,10 +18,12 @@ const router = createRouter({
         let res = await userAlreadyLoggedIn()
         if(res) {
           next(`/user/${res.user.id}`)}
+          else if (to.meta.permissionLevel && user.permissionLevel !== to.meta.permissionLevel) console.log("Não autorizado")        
           else next()
       },
       component: home
-    }
+    },
+
   ]
 })
 

@@ -55,7 +55,9 @@
 
 
 <script lang="ts">
-import axios from "axios";
+import axios from "axios"
+import { storeSetUser } from '../services/setUser'
+
 const axiosInstance = axios.create({
     baseURL: "http://localhost:3000",
     withCredentials: true, // Permite enviar cookies nas requisições
@@ -169,7 +171,8 @@ export default {
                     },
                     contact: ""
                 }
-                this.$router.push({ path: `/user/${res.data.id}` })
+                if(!storeSetUser(res)) return console.log("Não foi possivel cadastrar usuario na sessão")
+                this.$router.push({ path: `/user/${res.data.userData.id}` })
                 this.response = "Usuário registrado com sucesso"
                 
                 return  
