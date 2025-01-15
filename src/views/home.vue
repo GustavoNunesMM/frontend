@@ -10,7 +10,7 @@
                 'opacity-0 -translate-x-full': !showLogin,
                 }">
                 <loginScreen
-                @changeShowLogin="showLogin = !showLogin"
+                @changeShowLogin="alterLogin"
                 @response="payload => response = payload"></loginScreen>
             </div>
 
@@ -21,7 +21,7 @@
                     'opacity-0 translate-x-full': showLogin,
                 }">
                 <registerScreen
-                @changeShowLogin="showLogin = !showLogin"
+                @changeShowLogin="alterLogin"
                 @response="payload => response = payload"></registerScreen>
             </div>
         </div>
@@ -48,6 +48,9 @@ export default {
         }
     },
     methods: {
+        alterLogin() {
+            this.showLogin = !this.showLogin
+        }
     }
 }
 </script>

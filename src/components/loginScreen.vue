@@ -6,7 +6,7 @@
             <input type="password" placeholder="Senha" class="input-default" v-model="userLogin.pass" />
             <div class="flex flex-row justify-center p-0">
                 <button class="btn-primary" @click.prevent="login">Entrar</button>
-                <button class="btn-primary" @click.prevent="$emit(changeShowLogin)">
+                <button class="btn-primary" @click.prevent="$emit('changeShowLogin')">
                     Registrar
                 </button>
             </div>

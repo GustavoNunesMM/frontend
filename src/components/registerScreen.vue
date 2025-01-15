@@ -1,5 +1,5 @@
 <template>
-    <div v-if="registerNextPage" class="w-80 bg-white shadow-lg p-6 rounded-lg">
+    <div v-if="!registerFirstPage" class="w-80 bg-white shadow-lg p-6 rounded-lg">
         <h2 class="text-2xl font-bold mb-4">Registrar</h2>
         <form>
             <input type="text" placeholder="Email" class="input-default" v-model="regUser.email" />
@@ -9,11 +9,10 @@
                 v-model="regUser.passwordConfirm" />
             <div class="flex flex-row">
                 <button 
-                @click.prevent="registerNextPage = !registerNextPage" :disabled="!formErrors.isValid || !regUser.username || !regUser.password || !regUser.email" 
+                @click.prevent="sendNextRegisterPage"
                 class="btn-secondary">
                     Proximo
                 </button>
-                <button @click.prevent="get()" class="btn-secondary">Get</button>
                 <button class="btn-secondary" @click.prevent="$emit('changeShowLogin')">
                     Voltar
                 </button>
@@ -46,8 +45,7 @@
                 <button @click.prevent="sendRegister()" :disabled="!formErrors.isValid || !regUser.username || !regUser.password || !regUser.email"  class="btn-secondary">
                     Registrar
                 </button>
-                <button @click.prevent="get()" class="btn-secondary">Get</button>
-                <button class="btn-secondary" @click.prevent="registerNextPage = !registerNextPage">
+                <button class="btn-secondary" @click.prevent="registerFirstPage = !registerFirstPage">
                     Voltar
                 </button>
             </div>
@@ -86,7 +84,7 @@ export default {
                 contact: ""
             },
             response: "",
-            registerNextPage: false,
+            registerFirstPage: true,
             formErrors: {
                 email: false,
                 username: false,
@@ -110,12 +108,12 @@ export default {
             const passwordMaxLength = 20;
             const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,20}$/;
 
-            this.formErrors.email = !emailRegex.test(email);
-            this.formErrors.username = username.length < usernameMinLength || username.length > usernameMaxLength;
-            this.formErrors.password = !passwordRegex.test(password) || password.length < passwordMinLength || password.length > passwordMaxLength;
-            this.formErrors.passwordConfirm = password !== passwordConfirm;
+            this.formErrors.email = !emailRegex.test(email)
+            this.formErrors.username = username.length < usernameMinLength || username.length > usernameMaxLength
+            this.formErrors.password = !passwordRegex.test(password) || password.length < passwordMinLength || password.length > passwordMaxLength
+            this.formErrors.passwordConfirm = password !== passwordConfirm
             
-            this.formErrors.isValid = !Object.values(this.formErrors).includes(true);
+            this.formErrors.isValid = !Object.values(this.formErrors).includes(true)
         },
 
         async cepValidation() {
@@ -137,12 +135,17 @@ export default {
 
             this.regUser.adress = newAdress
         },
-        async sendRegister() {
+        sendNextRegisterPage() {
+            console.log("Chamando função")
             this.validateForm();
             if (!this.formErrors.isValid) {
                 this.response = "Por favor, corrija os erros no formulário."
                 return
             }
+            return this.registerFirstPage = !this.registerFirstPage
+        },
+        async sendRegister() {
+
             try {
                 
                 const data = this.regUser;
@@ -186,11 +189,13 @@ export default {
                 username: username,
                 password: password,
                 email: email,
-                permissionLevel: 'admin',
+                permissionLevel: 'ADMINISTRACAO',
             }
             return newData
         }
     }
     
 }
+//password hidden btn 
+
 </script>
