@@ -11,5 +11,5 @@ export async function userAlreadyLoggedIn() {
 export const responseValidation = async(response) => {
     if(response.status !== 200) return {sucess: false, message: "Não foi possivel realizar o login"}
         else return {sucess:true, message:"Validação de login concluida",
-            id:response.data.userData.userId}
+            data:response.data.userData}
 }

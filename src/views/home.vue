@@ -44,7 +44,7 @@ export default {
     data() {
         return {
             response: "",
-            showLogin: false,
+            showLogin: true,
         }
     },
     methods: {

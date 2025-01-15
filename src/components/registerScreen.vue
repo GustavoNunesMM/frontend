@@ -86,7 +86,7 @@ export default {
                 contact: ""
             },
             response: "",
-            registerFirstPage: true,
+            registerFirstPage: false,
             formErrors: {
                 email: false,
                 username: false,
@@ -138,7 +138,6 @@ export default {
             this.regUser.adress = newAdress
         },
         sendNextRegisterPage() {
-            console.log("Chamando função")
             this.validateForm();
             if (!this.formErrors.isValid) {
                 this.response = "Por favor, corrija os erros no formulário."

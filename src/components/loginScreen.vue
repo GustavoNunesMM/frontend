@@ -53,10 +53,11 @@ export default {
                 //caso usuario já esteja logado, nem chega aqui
                 const response = await axiosInstance.post("/login", data) //recebo a reposta e deve incluir o id
                 const validation = await responseValidation(response)
+                console.log(validation)
                 let setUser:boolean
                 if (validation.sucess)
                     if(!storeSetUser(response)) return console.log("Não foi possivel cadastrar usuario na sessão")
-                    this.$router.push({ path: `/user/${validation.id}` })
+                    this.$router.push({ path: `/user/${validation.data.id}` })
             } catch (error) {
                 console.log(
                     "Erro no login:",

@@ -30,7 +30,6 @@
                         {{ turma.nome }}
                     </li>
                 </ul>
-                {{ typeof selectedClass }}
             </aside>
 
             <!-- Main Content -->
