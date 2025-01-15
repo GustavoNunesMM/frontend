@@ -8,7 +8,9 @@
             <input type="password" placeholder="Confirme a senha" class="input-default"
                 v-model="regUser.passwordConfirm" />
             <div class="flex flex-row">
-                <button @click.prevent="registerNextPage = !registerNextPage" class="btn-secondary">
+                <button 
+                @click.prevent="registerNextPage = !registerNextPage" :disabled="!formErrors.isValid || !regUser.username || !regUser.password || !regUser.email" 
+                class="btn-secondary">
                     Proximo
                 </button>
                 <button @click.prevent="get()" class="btn-secondary">Get</button>
@@ -41,7 +43,7 @@
                 class="input-default no-counter" />
 
             <div class="flex flex-row">
-                <button @click.prevent="sendRegister()" class="btn-secondary">
+                <button @click.prevent="sendRegister()" :disabled="!formErrors.isValid || !regUser.username || !regUser.password || !regUser.email"  class="btn-secondary">
                     Registrar
                 </button>
                 <button @click.prevent="get()" class="btn-secondary">Get</button>
@@ -84,13 +86,36 @@ export default {
                 contact: ""
             },
             response: "",
-            registerNextPage: false
+            registerNextPage: false,
+            formErrors: {
+                email: false,
+                username: false,
+                password: false,
+                passwordConfirm: false,
+                isValid: false
+            }
         }
     },
     methods: {
         async get() {
             const { data } = await axiosInstance.get("/user");
             console.log(data);
+        },
+        validateForm() {
+            const { email, username, password, passwordConfirm } = this.regUser;
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            const usernameMinLength = 3;
+            const usernameMaxLength = 20;
+            const passwordMinLength = 6;
+            const passwordMaxLength = 20;
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,20}$/;
+
+            this.formErrors.email = !emailRegex.test(email);
+            this.formErrors.username = username.length < usernameMinLength || username.length > usernameMaxLength;
+            this.formErrors.password = !passwordRegex.test(password) || password.length < passwordMinLength || password.length > passwordMaxLength;
+            this.formErrors.passwordConfirm = password !== passwordConfirm;
+            
+            this.formErrors.isValid = !Object.values(this.formErrors).includes(true);
         },
 
         async cepValidation() {
@@ -113,7 +138,13 @@ export default {
             this.regUser.adress = newAdress
         },
         async sendRegister() {
+            this.validateForm();
+            if (!this.formErrors.isValid) {
+                this.response = "Por favor, corrija os erros no formulário."
+                return
+            }
             try {
+                
                 const data = this.regUser;
                 const newData = this.treatData(data)
             

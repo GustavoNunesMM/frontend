@@ -8,21 +8,10 @@
             <div class="login-container just-center-flex transition-all duration-500 ease-in-out" :class="{
                 'opacity-100 translate-x-0': showLogin,
                 'opacity-0 -translate-x-full': !showLogin,
-            }">
-                <div class="w-80 bg-white shadow-lg p-6 rounded-lg">
-                    <h2 class="text-2xl font-bold mb-4">Login</h2>
-                    <form>
-                        <input type="text" placeholder="Usuário" class="input-default" v-model="userLogin.user" />
-                        <input type="password" placeholder="Senha" class="input-default" v-model="userLogin.pass" />
-                        <div class="flex flex-row justify-center p-0">
-                            <button class="btn-primary" @click.prevent="login">Entrar</button>
-                            <button class="btn-primary" @click.prevent="showLogin = !showLogin">
-                                Registrar
-                            </button>
-                        </div>
-                    </form>
-                    {{ response }}
-                </div>
+                }">
+                <loginScreen
+                @changeShowLogin="showLogin = !showLogin"
+                @response="payload => response = payload"></loginScreen>
             </div>
 
             <!-- Div de Registro -->
@@ -32,9 +21,11 @@
                     'opacity-0 translate-x-full': showLogin,
                 }">
                 <registerScreen
-                @changeShowLogin="showLogin = !showLogin"></registerScreen>
+                @changeShowLogin="showLogin = !showLogin"
+                @response="payload => response = payload"></registerScreen>
             </div>
         </div>
+        {{ response }}
         <router-view></router-view>
     </div>
 </template>
@@ -43,49 +34,20 @@
 
 <script lang="ts">
 import registerScreen from "../components/registerScreen.vue"
-import axios from "axios"
-import { responseValidation } from "../middleware/tokenValidation"
-const axiosInstance = axios.create({
-    baseURL: "http://localhost:3000",
-    withCredentials: true, // Permite enviar cookies nas requisições
-});
+import loginScreen from '../components/loginScreen.vue'
 
 export default {
     components: {
-        registerScreen
+        registerScreen,
+        loginScreen
     },
     data() {
         return {
-            userLogin: {
-                user: "",
-                pass: "",
-            },
-            id: "",
             response: "",
             showLogin: false,
         }
     },
     methods: {
-        async login() {
-            const data = {
-                username: this.userLogin.user,
-                password: this.userLogin.pass,
-            };
-
-            try {
-                //caso usuario já esteja logado, nem chega aqui
-                const response = await axiosInstance.post("/login", data) //recebo a reposta e deve incluir o id
-                const validation = await responseValidation(response)
-                if (validation.sucess)
-                    this.$router.push({ path: `/user/${validation.id}` })
-            } catch (error) {
-                console.log(
-                    "Erro no login:",
-                    error.response ? error.response.data : error
-                );
-            }
-        },
-
     }
 }
 </script>
