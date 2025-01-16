@@ -1,25 +1,5 @@
 <template>
     <div class="h-screen flex flex-col bg-gray-100">
-        <!-- Header -->
-        <header class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-lg">
-            <h1 class="text-lg font-bold">Bem-vindo, {{ username }}</h1>
-            <div class="relative">
-                <button class="btn-primary mr-8" @click="toggleDropdown">
-                    Menu
-                </button>
-                <div v-if="dropdownVisible"
-                    class="absolute right-0 mt-2 p-2  w-40 bg-[rgba(255,255,255,0.5)] rounded-lg shadow-lg z-10 flex flex-col gap-2">
-                    <button class="btn-dropdown" @click="goToSettings">
-                        Configurações
-                    </button>
-                    <button class="btn-dropdown" @click="logout">
-                        Logout
-                    </button>
-                </div>
-            </div>
-        </header>
-
-        <!-- Content -->
         <div class="flex flex-1">
             <!-- Sidebar -->
             <aside class="w-1/8 bg-white shadow-md p-4 overflow-y-auto">

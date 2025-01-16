@@ -25,6 +25,16 @@
         active:bg-green-700 
         focus:outline-none focus:ring focus:ring-green-300;
     }
+    .btn-full {
+        @apply bg-blue-500 text-white font-bold py-5 px-8 w-[80%] mx-4 rounded-xl
+        border-r-2 border-blue-500 
+        
+        flex justify-center items-center flex-col
+        hover:bg-blue-600 
+        active:bg-blue-700
+        focus:border-r-4 focus:outline-none focus:border-blue-800 focus:w-full focus:rounded-none
+        focus:mx-0 transition-all
+    }
     .btn-dropdown {
         @apply bg-blue-500 text-white font-bold h-[42px] my-0 px-6 rounded
         flex justify-center items-center flex-col
