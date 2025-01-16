@@ -9,13 +9,18 @@ const router = createRouter({
       path:'/user/:id/',
       name:'User',
       component: user,
-      props: true
+      props: true,
+      beforeEnter: async(to, from, next) => {
+        const res = await userAlreadyLoggedIn()
+        if (res) next(`/user/${res.user.id}`)
+          else next()
+      }
     },
     {
       path:'/',
       name:'Home',
       beforeEnter: async (to, from, next) => { //até aqui ok
-        let res = await userAlreadyLoggedIn()
+        const res = await userAlreadyLoggedIn()
         if(res) {
           next(`/user/${res.user.id}`)}
           else if (to.meta.permissionLevel && user.permissionLevel !== to.meta.permissionLevel) console.log("Não autorizado")        

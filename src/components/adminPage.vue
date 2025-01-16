@@ -26,13 +26,17 @@
                     <table class="min-w-full table-auto">
                         <thead class="bg-gray-200">
                             <tr>
+                                <th class="p-2 text-left">id</th>
                                 <th class="p-2 text-left">Nome</th>
+                                <th class="p-2 text-left">Email</th>
                                 <th class="p-2 text-left">Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="student in students" :key="student.id">
-                                <td class="p-2">{{ student.name }}</td>
+                            <tr v-for="(student) in students" :key="student.id">
+                                <td class="p-2">{{ student.id }}</td>
+                                <td class="p-2">{{ student.username }}</td>
+                                <td class="p-2">{{ student.email }}</td>
                                 <td class="p-2">{{ student.status }}</td>
                             </tr>
                         </tbody>
@@ -45,8 +49,8 @@
                     <div v-for="(contents, subject) in classContents" :key="subject" class="mb-4">
                         <h3 class="font-semibold text-lg">{{ subject }}</h3>
                         <ul>
-                            <li v-for="content in contents" :key="content.id">
-                                <p>{{ content.name }}</p>
+                            <li v-for="(content, index) in contents" :key="index">
+                                <p>{{ content }}</p>
                             </li>
                         </ul>
                     </div>
@@ -100,48 +104,43 @@ export default {
     data() {
         return {
             activeTab: "students", // Initial tab is "students"
-            students: [
-                { id: 1, name: "João Silva", status: "Ativo" },
-                { id: 2, name: "Maria Oliveira", status: "Inativo" },
-            ],
-            classContents: {
-                Matemática: [
-                    { id: 1, name: "Álgebra" },
-                    { id: 2, name: "Geometria" },
-                ],
-                Português: [
-                    { id: 3, name: "Gramática" },
-                    { id: 4, name: "Redação" },
-                ],
-            },
-            teachersBySubject: {
-                Matemática: [{ id: 1, name: "Prof. João" }],
-                Português: [{ id: 2, name: "Prof. Maria" }],
-            },
-            users: [
-                { id: 1, name: "Admin", email: "admin@escola.com", permissionLevel: "Admin" },
-                { id: 2, name: "Supervisor", email: "supervisor@escola.com", permissionLevel: "Supervisor" },
-            ],
+            students: [],
+            classContents: [],
+            teachersBySubject: [],
+            users: [],
+            actualClass: 1
         };
     },
     props: ['selectClass'],
-    async mounted() {
-        try {
-            const classId = '1'
-            console.log(classId)
-            const res = await axiosInstance.get(`/classData/${classId}`)
-            console.log(res)
-        }catch(err) {
-            console.log(err)
+    watch: {
+        selectClass(newClassId, oldClassId) {
+            if (newClassId !== this.actualClass) {
+                this.actualClass = newClassId
+                this.getData(newClassId)
+            }
         }
     },//falta integrar os dados, oferecer opções de modificação e conferir no store
     methods: {
-        logout() {
-            // Your logout logic here
-            console.log("Logout!");
+        async getData(classId) {
+            try {
+                const { data } = await axiosInstance.get(`/classData/${classId}`)
+                const { users, contents } = data.classDetails
+                console.log(data)
+                // Filtrar alunos e professores
+                this.students = users.filter(user => user.permissionLevel === 'ALUNO')
+                const teachers = users.filter(user => user.permissionLevel === 'PROFESSOR')
+
+                // Organizar conteúdos por professor
+                this.classContents = contents.map(content => ({
+                    ...content,
+                    teacher: teachers.find(teacher => teacher.id === content.teacher?.id) || null,
+                }))
+            } catch (error) {
+                console.error("Erro ao obter dados da turma:", error)
+            }
         },
     },
-};
+}
 </script>
 
 <style scoped>

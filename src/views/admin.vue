@@ -86,9 +86,9 @@ export default {
         goToSettings() {
             console.log("Indo para configurações...");
         },
-        async selectTurma(turma) {
-            this.selectedClass = turma
-            console.log("Turma selecionada:", turma)
+        async selectTurma(classId) {
+            this.selectedClass = classId
+            console.log("Turma selecionada:", classId)
 
         },
         async getClasses() {
