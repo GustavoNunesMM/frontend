@@ -1,24 +1,37 @@
 <template>
     <div class="h-screen flex flex-col bg-gray-100">
         <div class="flex flex-1">
-            <!-- Sidebar -->
-            <aside class="w-1/8 bg-white shadow-md p-4 overflow-y-auto">
-                <h2 class="text-xl font-semibold mb-4">Minhas Turmas</h2>
-                <ul >
-                    <li v-for="(classesByYear, year) in classes" :key="year" class="hover:bg-gray-100 p-2 rounded-lg">
-                        <h3 class="font-semibold">{{ year }}</h3>
-                        <ul >
-                            <li v-for="Class in classesByYear" :key="Class.id" class="hover:bg-gray-200 cursor-pointer rounded-lg p-2" @click.prevent="selectTurma(Class.id)">
-                                {{ Class.name }}
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </aside>
+            <div class="flex">
+                <div class="w-64 h-screen bg-blueTons-light">
+                    <div class="text-white mb-6 flex flex-col place-items-center">
+                        <h1 class="text-2xl font-semibold">{{username}}</h1>
+                        <img src="../assets/background.jpg" alt="Ilustração" class="w-24 h-24 mt-2 rounded-full"/>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div v-for="(item, index) in listOfButton" :key="index">
+                            <button @click="loadInfo(index)" class="btn-dropdown" 
+                            :class="{'btn-dropdown-active': isExpanded === index}">
+                                {{ item }}
+                            </button>
+
+                            <div v-if="isExpanded === index" class="shadow-inner w-full shadow-black py-2 bg-blueTons-Default">
+                                <div v-for="(button, index_btn) in listOfSubButtons[index]" :key=index_btn 
+                                class="dropdown-menu">
+                                    <button class="btn-aside hover:shadow-button-active"
+                                    @click="selectTurma(index_btn)">
+                                        {{ button }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <mainContent :selectClass="selectedClass"></mainContent>
+
 
             <!-- Main Content -->
-            <mainContent 
-            :selectClass="selectedClass"></mainContent>
         </div>
     </div>
 </template>
@@ -43,6 +56,13 @@ export default {
             classes: [], // Lista de turmas
             selectedClass: null, // Turma selecionada
             dropdownVisible: false, // Controle do menu suspenso
+            myClasses: false,
+            isExpanded:1,
+            listOfButton: ['Dados', 'permissões', 'configurações'],
+            listOfSubButtons: [
+                ['cadastrar usuario', 'cadastrar turma', 'cadastrar conteudo'],
+                ['exibir conteudo', 'selecionar escola'],
+                ['logout', 'configurações', 'segurança']]
         }
     },
     mounted() {
@@ -52,8 +72,8 @@ export default {
     },
     props: {
         id: Number,
-
     },
+
     methods: {
         toggleDropdown() {
             this.dropdownVisible = !this.dropdownVisible
@@ -66,8 +86,8 @@ export default {
         goToSettings() {
             console.log("Indo para configurações...");
         },
-        async selectTurma(classId) {
-            this.selectedClass = classId
+        async selectTurma(classId:number) {
+            this.selectedClass = classId+1
             console.log("Turma selecionada:", classId)
 
         },
@@ -86,6 +106,10 @@ export default {
             });
 
             this.classes = aggregatedBySerie
+        },
+        loadInfo(id:number) {
+            this.isExpanded === id?this.isExpanded = 0: this.isExpanded = id
+            this.selectedClass
         }
     }
 }
@@ -96,4 +120,5 @@ header {
     top: 0;
     z-index: 50;
 }
+
 </style>

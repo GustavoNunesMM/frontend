@@ -1,24 +1,20 @@
 <template>
-    <aside class="w-1/6 bg-gray-100 py-4 border-r">
-        <ul >
-            <li class="mb-2">
-                <button @click="trownNewTab('students')" class="btn-full">Alunos</button>
-            </li>
-            <li class="mb-2">
-                <button @click="trownNewTab('content')" class="btn-full">Conteúdos</button>
-            </li>
-            <li class="mb-2">
-                <button @click="trownNewTab('users')" class="btn-full ">Usuários</button>
+    <header>
+        <ul class="flex flex-row h-full bottom-0">
+            <li v-for="(tabs, index) in possibleTab" :key="index" class="bar-top" 
+            :class="{'bar-top-d': activeTab !== tabs,'ml-0':index==0}" @click="trownNewTab( tabs )">
+                <p class="text-top">{{ tabs }}</p>
             </li>
         </ul>
-    </aside>
+    </header>
 </template>
 
 <script lang="ts">
 export default{
     data() {
         return {
-            activeTab: "students"
+            possibleTab: ['estudantes', 'conteudo', 'usuarios'],
+            activeTab: "estudantes"
         }
     },
     methods: {

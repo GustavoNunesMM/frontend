@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full h-1/4 m-0 absolute bottom-0 bg-white">
+    <div class="w-half h-full m-0 bottom-0 bg-white">
         
     </div>
 </template>

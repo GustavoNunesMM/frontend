@@ -1,0 +1,19 @@
+<div class="h-[200px]">
+    itens principais
+</div>
+<div @click.prevent="myClasses = !myClasses" class="block-classes shadow-button-active">
+    <h2 class="">Minhas Turmas</h2>
+        <div v-if="myClasses"> 
+            <ul>
+                <li v-for="(classesByYear, year) in classes" :key="year" class="block-class">
+                    <h3 class="">{{ year }}</h3>
+                    <ul >
+                        <li v-for="Class in classesByYear" :key="Class.id" class="btn-class" 
+                        @click.prevent="selectTurma(Class.id)">
+                        {{ Class.name }}
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+</div>

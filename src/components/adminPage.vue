@@ -1,17 +1,19 @@
 <template>
-    <div class="flex flex-col w-full h-full">
-        <div class="flex h-full">
-            <asideTab @newTab="(newValue)=>activeTab=newValue"/>
-            <main class="flex-1 p-[2px] transition-all">
-                <transition-group name="fade">
-                    <studentTab v-if="activeTab === 'students'" :studentsData="students"/>
-                    <contentTab v-if="activeTab === 'content'" :contentData="classContents"></contentTab>
-                    <usersTab   v-if="activeTab === 'users'" :userData="users"></usersTab>
-                </transition-group >
+    <div class="m-2 parent w-full h-full p-4">
+        <asideTab class="uperTab h-full" @newTab="(newValue)=>activeTab=newValue"/>
+        <main class="p-[2px] pt-0 place-self-center m-0 w-full h-full bg-white restContent">
+            <transition-group name="fade">
+                <studentTab v-show="activeTab === 'estudantes'" 
+                
+                :studentsData="students"/>
+                <contentTab v-show="activeTab === 'conteudo'" 
+                :contentData="classContents"/>
+                <usersTab   v-show="activeTab === 'usuarios'" 
+                :userData="users"/>
+            </transition-group >
 
-                <dataInfo class="m-0 p-0"></dataInfo>
-            </main>
-        </div>
+            <dataInfo class="m-0 p-2"/>
+        </main>
     </div>
 </template>
 
@@ -39,12 +41,13 @@ export default {
     },
     data() {
         return {
-            activeTab: "students", // Initial tab is "students"
+            activeTab: "estudantes", // Initial tab is "students"
             students: [],
             classContents: [],
             teachersBySubject: [],
             users: [],
-            actualClass: '1'
+            actualClass: '1',
+            modifiedData: []
         };
     },
     props: ['selectClass'],
@@ -62,9 +65,7 @@ export default {
             try {
                 const { data } = await axiosInstance.get(`/classData/${classId}`)
                 const { users, contents } = data.classDetails
-                // Filtrar alunos e professores
                 this.students = users.filter(user => user.permissionLevel === 'ALUNO')
-                // Organizar conteúdos por professor
                 this.classContents = contents.map( content => {
                     return content.user
                 })
@@ -75,6 +76,10 @@ export default {
                 console.error("Erro ao obter dados da turma:", error)
             }
         },
+        async modifyData(payload) {
+            
+        }
+        
     },
 }
 </script>
@@ -94,4 +99,16 @@ export default {
 .fade-enter-to, .fade-leave-from {
     opacity: 1;
 }
+
+.parent {
+display: grid;
+grid-template-columns: 1fr;
+grid-template-rows: 0.1fr 1fr;
+grid-column-gap: 0px;
+grid-row-gap: 0px;
+}
+
+.uperTab { grid-area: 1 / 1 / 2 / 2; }
+.restcontent { grid-area: 2 / 1 / 3 / 2; } 
+
 </style>
