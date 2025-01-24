@@ -14,12 +14,20 @@
                             :class="{'btn-dropdown-active': isExpanded === index}">
                                 {{ item }}
                             </button>
+                            <div v-if="isExpanded === index && isExpanded === 0" class="shadow-inner w-full shadow-black py-2 bg-blueTons-Default">
+                                <div v-for="(year, index_y) in listOfClass" :key="index_y">
+                                    <div v-for="(classer, index_c) in year" :key="index_c" class="dropdown-menu">
+                                        <button class="btn-aside hover:shadow-button-active" @click="selectTurma(classer.id)">
+                                            {{ classer.serie }} - {{classer.name}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <div v-if="isExpanded === index" class="shadow-inner w-full shadow-black py-2 bg-blueTons-Default">
+                            <div v-if="isExpanded === index && isExpanded !== 0" class="shadow-inner w-full shadow-black py-2 bg-blueTons-Default">
                                 <div v-for="(button, index_btn) in listOfSubButtons[index]" :key=index_btn 
                                 class="dropdown-menu">
-                                    <button class="btn-aside hover:shadow-button-active"
-                                    @click="selectTurma(index_btn)">
+                                    <button class="btn-aside hover:shadow-button-active">
                                         {{ button }}
                                     </button>
                                 </div>
@@ -40,11 +48,8 @@
 import axios from 'axios'
 import mainContent from '../components/adminPage.vue'
 import { useUserStore } from '../stores/user'
+import { useClassStore } from '../stores/adminStore'
 
-const axiosInstance = axios.create({
-    baseURL: "http://localhost:3000",
-    withCredentials: true, // Permite enviar cookies nas requisições
-})
 
 export default {
     components: {
@@ -57,18 +62,22 @@ export default {
             selectedClass: null, // Turma selecionada
             dropdownVisible: false, // Controle do menu suspenso
             myClasses: false,
-            isExpanded:1,
-            listOfButton: ['Dados', 'permissões', 'configurações'],
+            isExpanded:0,
+            listOfButton: ['Turmas', 'Permissões', 'Configurações'],
             listOfSubButtons: [
-                ['cadastrar usuario', 'cadastrar turma', 'cadastrar conteudo'],
                 ['exibir conteudo', 'selecionar escola'],
-                ['logout', 'configurações', 'segurança']]
+                ['logout', 'configurações', 'segurança']],
+            debug: ''
+        }
+    },
+    computed: {
+    listOfClass() {
+        return useClassStore().agregateClass;
         }
     },
     mounted() {
-        const userStore = useUserStore()
-        userStore.user ? this.username = userStore.user.username : this.username = "Usuario"
-        this.getClasses()
+        useUserStore().user ? this.username = useUserStore().user.username : this.username = "Usuario"
+        useClassStore().getClasses()
     },
     props: {
         id: Number,
@@ -87,28 +96,12 @@ export default {
             console.log("Indo para configurações...");
         },
         async selectTurma(classId:number) {
-            this.selectedClass = classId+1
+            useClassStore().getThatClass(classId)
             console.log("Turma selecionada:", classId)
 
         },
-        async getClasses() {
-            const { data } = await axiosInstance.get("/class")
-
-            const aggregatedBySerie = data.reduce((acc, item) => {
-                if (!acc[item.serie]) {
-                    acc[item.serie] = []
-                }
-                acc[item.serie].push(item)
-                return acc;
-            }, {});
-            Object.keys(aggregatedBySerie).forEach(year => {
-                aggregatedBySerie[year].sort((a, b) => a.name.localeCompare(b.name))  // Ordena as turmas pelo nome
-            });
-
-            this.classes = aggregatedBySerie
-        },
         loadInfo(id:number) {
-            this.isExpanded === id?this.isExpanded = 0: this.isExpanded = id
+            this.isExpanded === id?this.isExpanded = -1: this.isExpanded = id
             this.selectedClass
         }
     }

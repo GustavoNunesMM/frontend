@@ -8,9 +8,9 @@ interface User {
 }
 
 export const useUserStore = defineStore('userStore', {
-  state: () => ({
+    state: () => ({
       user: null, // Dados do usuário logado
-  }),
+    }),
     getters: {
         isAuthenticated: (state) => state.user, // Retorna true se o usuário estiver logado
         userPermissionLevel: (state) => state.user?.permissionLevel || null, // Retorna o nível de permissão do usuário
@@ -24,4 +24,4 @@ export const useUserStore = defineStore('userStore', {
         },
         
     },
-});
+})

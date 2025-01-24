@@ -41,7 +41,12 @@
     .text-top {
         @apply w-auto mx-2 
     }
-
+    .inputInfoTableDisable {
+        @apply cursor-default pointer-events-none bg-transparent text-black placeholder-black
+    }
+    .inputInfoTableEnable {
+        @apply cursor-auto pointer-events-auto
+    }
     .just-center-flex {
         @apply flex-1 flex items-center justify-center
     }
