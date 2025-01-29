@@ -35,7 +35,7 @@ export default {
         return {
             activeTab: "estudantes", // Initial tab is "students"
             actualClass: '1',
-        };
+        }
     }
 }
 </script>

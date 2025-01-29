@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios'
-
+import { toRaw } from 'vue';
 const axiosInstance = axios.create({
     baseURL: "http://localhost:3000",
     withCredentials: true, // Permite enviar cookies nas requisições
@@ -31,11 +31,14 @@ type AggregatedClasses = Record<string, ClassItem[]>;
 
 export const useClassStore = defineStore('classStore', {
     state: () => ({
-        classes: [] as ClassItem[], // Armazena os dados
-        students: [] as Students[],
-        contents: [],
-        user: [],
-        dataStatus: []
+        classes: [] as ClassItem[], // todas as turmas
+        students: [] as Students[], // estudantes
+        thatClass: [], //dados da turma completos
+        contents: [], //conteudos
+        user: [], //usuarios
+        dataStatus: [], // status da turma
+        dataModified: [],
+        previousData: []
     }),
 
     actions: {
@@ -52,20 +55,43 @@ export const useClassStore = defineStore('classStore', {
         async getThatClass(id: number) {
             try {
                 const { data } = await axiosInstance.get(`/classData/${id}`)
+                this.thatClass = data.classDetails
                 const { users, contents } = data.classDetails
                 //this.alldata = data
                 this.students = users.filter(user => user.permissionLevel === 'ALUNO')
+                this.previousData = structuredClone(toRaw(this.students))
                 this.contents = contents.map( ({content}) => {return content})
                 this.user = users.filter(user => 
                 user.permissionLevel !== 'ALUNO' && user.permissionLevel !== 'PROFESSOR')
-
             } catch (error) {
                 console.error("Erro ao obter dados da turma:", error)
             }
         },
-        async changeClasses([data, id]:[ClassItem, number]) {
-            this.classes[id] = data
-
+        async changeUsers(newData: Students[]) {
+            this.dataModified = newData
+            if (this.dataModified.length === 0) {
+                console.log("Nenhuma operação a ser realizada")
+                return
+            }
+            console.log("Iniciando operações...")
+            const requests = this.dataModified.map(user => {
+                const userId = user.id;
+                const changes = Object.entries(user).map(([key, value]) => ({ [key]: value }));
+                const ObjectModifier = {
+                    _id: userId,
+                    changes,
+                };
+                return axiosInstance.put('/user', ObjectModifier)
+            })
+            try {
+                const results = await Promise.all(requests)
+                const successfulUpdates = results.filter(result => result.status === 200).length
+                console.log(`${successfulUpdates} operações concluídas com sucesso.`)
+            } catch (error) {
+                console.error("Erro ao atualizar usuários:", error);
+            }
+        
+            this.previousData = structuredClone(toRaw(this.students))
         }
     },
     getters: {
@@ -88,6 +114,6 @@ export const useClassStore = defineStore('classStore', {
                 return data 
             })
             return acc
-        }
+        },
     },
 });
