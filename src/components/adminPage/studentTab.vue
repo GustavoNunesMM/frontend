@@ -11,8 +11,8 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(student, index) in data" :key="student.id" :class="{ 'bg-slate-100': index % 2 }">
-                    <td class="p-2"><input class="inputInfoTableDisable" v-model="data[index].id" readonly></td>
+                <tr v-for="(student, index) in data" :key="student.id" :class="{ 'rowEdit': userEdit === index,'bg-slate-100': index % 2 && userEdit !== index }">
+                    <td class="p-2">{{index+1}} </td>
 
                     <td class="p-2"><input class="inputInfoTableDisable"
                             :class="{ 'inputInfoTableEnable': userEdit === index }" v-model="student.username"></td>
@@ -24,18 +24,32 @@
                             :class="{ 'inputInfoTableEnable cursor-pointer outline-none caret-transparent focus:bg-transparent': userEdit === index }"
                             @click.prevent="data[index].status = !data[index].status" v-model="correctStatus[index].status"></td>
 
-                    <td class="p-2">
-                        <button @click.prevent="remStudent(index, student.id)">Remover</button>
-                        <button @click.prevent="editUser(index)">Editar</button>
+                    <td class="px-2 flex flex-row rounded-md">
+                        <button @click.prevent="remStudent(index, student.id)" class="h-8 w-auto my-1 px-2 rounded-md mx-2 bg-red-500 flex flex-row"><img src="../../assets/trash.png" alt="remover" class="w-4 invert m-auto"> <p class="text-white ml-1 m-auto">Deletar</p></button>
+                        <button @click.prevent="editUser(index)" class="w-auto h-8 rounded-md my-1 px-2 mx-2 bg-slate-300 flex flex-row"><img src="../../assets/edit.png" alt="editar" class="w-4 invert m-auto"><p class="text-white ml-1 m-auto">Editar</p></button>
                     </td>
                 </tr>
             </tbody>
         </table>
-        {{ modifiedData }}
-        <button @click="sendChanges(modifiedData)"> save</button>
-        <button @click="isModalOpen = !isModalOpen"> create user</button>
-        <modal v-if="isModalOpen"
-        @closeModal="isModalOpen = !isModalOpen"></modal>
+        
+        <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50  " v-if="isDeletingUser">
+            <div class="bg-white rounded-md m-auto">
+                <p class=" font-bold  text-lg m-2">Atenção:</p>
+                <p class="m-8 mt-4">Deseja realmente deletar o usuario: {{ data[deletingUser.index].username }}</p>
+                
+                <div class="flex flex-row place-content-evenly mb-5">
+                    <button class="btn-red" @click.prevent="removeStudent()">Deletar</button>
+                    <button class="btn-default bg-gray-400 hover:bg-gray-500 " @click="isDeletingUser = !isDeletingUser">Voltar</button>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <button @click="sendChanges(modifiedData)" class="btn-default"> Salvar </button>
+            <button @click="isModalOpen = !isModalOpen" class="btn-default"> Criar usuario</button>
+        </div>
+
+        <modal v-if="isModalOpen" @closeModal="isModalOpen = !isModalOpen"></modal>
     </div>
 </template>
 
@@ -59,6 +73,11 @@ export default {
         return {
             userEdit: undefined,
             isModalOpen: false,
+            isDeletingUser: false,
+            deletingUser: {
+                index: '',
+                id: ''
+            }
         }
     },
     computed: {
@@ -90,17 +109,19 @@ export default {
         sendChanges(data) {
             useClassStore().changeUsers(data)
         },
-        remStudent(id: number, userId: number) {
-            try {
-                axiosInstance.delete(`user/${userId}`)
-                console.log("usuario", this.data[id].username, "deletado com sucesso")
-            } catch (error) {
-                console.log(error)
-            }
+        remStudent(index: number, userId: number) {
+            this.deletingUser = {index: index, id:userId}
+            this.isDeletingUser = true
         },
-        createUser() {
-
-        },
+        removeStudent() {
+        try {
+            const {id, index} = this.deletingUser
+            axiosInstance.delete(`user/${id}`)
+            console.log("usuario", this.data[index].username, "deletado com sucesso")
+        } catch (error) {
+            console.log(error)
+        }
+        }
     }
 }
 </script>

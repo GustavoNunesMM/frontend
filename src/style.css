@@ -18,7 +18,6 @@
 @layer components {
     .btn-dropdown {
         @apply w-full h-10 p-2 text-white bg-blueTons-light
-        
     }
     .btn-dropdown-active {
         @apply bg-blueTons-hover
@@ -45,7 +44,7 @@
         @apply cursor-default pointer-events-none bg-transparent text-black placeholder-black
     }
     .inputInfoTableEnable {
-        @apply cursor-auto pointer-events-auto
+        @apply cursor-auto pointer-events-auto rounded-sm outline-4 outline-offset-2
     }
     .just-center-flex {
         @apply flex-1 flex items-center justify-center
@@ -54,7 +53,21 @@
         @apply w-full border p-2 rounded mb-4 
         focus:outline-none focus:ring focus:ring-slate-50 focus:bg-white
         invalid:outline-none invalid:ring invalid:ring-red-400 invalid:bg-red-50
-        
+    }
+    .btn-default {
+        @apply w-40 p-2 rounded-md bg-blueTons-btn m-2 h-auto text-white
+        hover:bg-blueTons-click target:bg-blueTons-light target:shadow-inherit
+    }
+    .btn-green {
+        @apply w-40 p-2 rounded-md bg-greenTons-Default m-2 h-auto text-white
+        hover:bg-greenTons-click target:bg-greenTons-darker target:shadow-inherit
+    }
+    .btn-red {
+        @apply w-40 p-2 rounded-md bg-redTons-Default m-2 h-auto text-white 
+        hover:bg-redTons-click target:bg-redTons-darker target:shadow-inherit
+    }
+    .rowEdit {
+        @apply bg-slate-400
     }
     .no-counter::-webkit-outer-spin-button
     .no-counter::-webkit-inner-spin-button {

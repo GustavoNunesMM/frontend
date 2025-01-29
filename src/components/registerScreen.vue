@@ -57,7 +57,7 @@
 <script lang="ts">
 import axios from "axios"
 import { storeSetUser } from '../services/setUser'
-
+import {validateForm, validateCep, treatData} from '../middleware/regUserValidation'
 const axiosInstance = axios.create({
     baseURL: "http://localhost:3000",
     withCredentials: true, // Permite enviar cookies nas requisições
@@ -101,44 +101,11 @@ export default {
             const { data } = await axiosInstance.get("/user");
             console.log(data);
         },
-        validateForm() {
-            const { email, username, password, passwordConfirm } = this.regUser;
-            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            const usernameMinLength = 3;
-            const usernameMaxLength = 20;
-            const passwordMinLength = 6;
-            const passwordMaxLength = 20;
-            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,20}$/;
-
-            this.formErrors.email = !emailRegex.test(email)
-            this.formErrors.username = username.length < usernameMinLength || username.length > usernameMaxLength
-            this.formErrors.password = !passwordRegex.test(password) || password.length < passwordMinLength || password.length > passwordMaxLength
-            this.formErrors.passwordConfirm = password !== passwordConfirm
-            
-            this.formErrors.isValid = !Object.values(this.formErrors).includes(true)
-        },
-
         async cepValidation() {
-            const cep = this.regUser.adress.cep
-            if (cep === "") return { success: false, message: "Cep vazio" }
-            const validacep = /^[0-9]{8}$/
-            if (!validacep.test(cep)) return { success: false, message: "Cep incorreto" }
-
-            const script = `https://viacep.com.br/ws/${cep}/json/`
-            const { data } = await axios.get(script, { withCredentials: false })
-
-            const newAdress = {
-                ...this.regUser.adress,
-                street: data.logradouro,
-                neighborhood: data.bairro,
-                city: data.localidade,
-                state: data.uf
-            }
-
-            this.regUser.adress = newAdress
+            this.user.adress = validateCep(this.regUser.adress.cep, this.regUser.adress)
         },
         sendNextRegisterPage() {
-            this.validateForm();
+            this.formErrors = validateForm(this.regUser, true)
             if (!this.formErrors.isValid) {
                 this.response = "Por favor, corrija os erros no formulário."
                 return
@@ -146,11 +113,9 @@ export default {
             return this.registerFirstPage = !this.registerFirstPage
         },
         async sendRegister() {
-
             try {
-                
                 const data = this.regUser;
-                const newData = this.treatData(data)
+                const newData = await treatData(data, 'ADMINISTRACAO')
             
                 const res = await axiosInstance.post("/register/user", newData);
                 console.log('Resposta do servidor:', res);
@@ -180,20 +145,6 @@ export default {
                 if (error.message.err.meta.modelName) this.response = error.err.meta.modelName
                 return "Erro ao registrar usuário";
             }
-        },
-        treatData(data) {
-            const entries = Object.entries(data.adress);
-            const newAdress = entries.map(([key, value]) => `${key}: ${value}`).join(', ');
-            const { contact, username, password, email } = data;
-            const newData = {
-                endereco: newAdress,
-                contato: contact,
-                username: username,
-                password: password,
-                email: email,
-                permissionLevel: 'ADMINISTRACAO',
-            }
-            return newData
         }
     }
     

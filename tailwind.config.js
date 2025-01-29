@@ -11,7 +11,8 @@ export default {
           Default: '#314b5e',
           light: '#284b63',
           click: '#1b2f3e',
-          hover: '#233b4d'
+          hover: '#233b4d',
+          btn: '#22577a'
         },
         grayTons: {
           Default: '#919293',
@@ -19,8 +20,16 @@ export default {
           light: '#ececec'
         },
         greenTons: {
-          Default: '#48b89f',
-          darker: '#3f9e89'
+          Default: '#80ed99',
+          darker: '#57cc99',
+          click: '#3BC78B',
+          light: '#c7f9cc'
+        },
+        redTons: {
+          Default: '#A51C30',
+          darker: '#74121D',
+          light: '#C52233',
+          click: '#580C1F'
         }
       },
       boxShadow: {
