@@ -80,7 +80,7 @@ export const useClassStore = defineStore('classStore', {
                 const ObjectModifier = {
                     _id: userId,
                     changes,
-                };
+                }
                 return axiosInstance.put('/user', ObjectModifier)
             })
             try {

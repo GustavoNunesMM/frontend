@@ -22,7 +22,7 @@
 
                     <td class="p-2"><input class="inputInfoTableDisable"
                             :class="{ 'inputInfoTableEnable cursor-pointer outline-none caret-transparent focus:bg-transparent': userEdit === index }"
-                            @click.prevent="changeStatus(index, student.id)" v-model="correctStatus[index].status"></td>
+                            @click.prevent="data[index].status = !data[index].status" v-model="correctStatus[index].status"></td>
 
                     <td class="p-2">
                         <button @click.prevent="remStudent(index, student.id)">Remover</button>
@@ -33,25 +33,32 @@
         </table>
         {{ modifiedData }}
         <button @click="sendChanges(modifiedData)"> save</button>
-        <button @click="createUser()"> create user</button>
+        <button @click="isModalOpen = !isModalOpen"> create user</button>
+        <modal v-if="isModalOpen"
+        @closeModal="isModalOpen = !isModalOpen"></modal>
     </div>
 </template>
 
 <script lang="ts">
 import axios from 'axios'
 import { useClassStore, Students, Status } from '../../stores/adminStore'
+import modal from '../modal.vue'
 const axiosInstance = axios.create({
     baseURL: "http://localhost:3000",
     withCredentials: true, // Permite enviar cookies nas requisições
 })
 
 export default {
+    components: {
+        modal
+    },
     props: {
         studentsData: Array
     },
     data() {
         return {
             userEdit: undefined,
+            isModalOpen: false,
         }
     },
     computed: {
@@ -80,15 +87,6 @@ export default {
             if (this.userEdit == id) return this.userEdit = undefined //set userEdit como undefined
             this.userEdit = id //poe o usuario em estado de edição        
         },//corrigir daqui pra baixo
-        disStudent(id: number, userId: number) {
-            const data = !this.data[id].status
-            console.log(data)
-            const ObjectModifier = {
-                "_id": userId,
-                "changes": [{ "status": data }]
-            }
-            this.modifiedData.push(ObjectModifier)
-        },
         sendChanges(data) {
             useClassStore().changeUsers(data)
         },
@@ -96,8 +94,8 @@ export default {
             try {
                 axiosInstance.delete(`user/${userId}`)
                 console.log("usuario", this.data[id].username, "deletado com sucesso")
-            } catch (e) {
-                console.log(e)
+            } catch (error) {
+                console.log(error)
             }
         },
         createUser() {
